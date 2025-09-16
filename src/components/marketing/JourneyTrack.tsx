@@ -1,58 +1,72 @@
-'use client'
-import { motion } from 'framer-motion'
+'use client';
+import { motion } from 'framer-motion';
 
-export type Milestone = { id: string; label: string; sub?: string }
-
-export default function JourneyTrack({ className = '', milestones = DEFAULT_MILESTONES }: { className?: string; milestones?: Milestone[] }) {
+export default function JourneyTrack({ className = '' }: { className?: string }) {
   return (
     <div className={`relative w-full ${className}`}>
-      <svg viewBox="0 0 1200 340" className="h-64 w-full">
+      <svg viewBox="0 0 1200 260" className="h-56 w-full">
         <defs>
           <linearGradient id="jt-grad" x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" stopColor="#34d399" />
-            <stop offset="50%" stopColor="#22c1c3" />
+            <stop offset="55%" stopColor="#22d3ee" />
             <stop offset="100%" stopColor="#60a5fa" />
           </linearGradient>
-          <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur" />
+          <filter id="jt-glow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="8" result="coloredBlur" />
             <feMerge>
-              <feMergeNode in="blur" />
+              <feMergeNode in="coloredBlur" />
               <feMergeNode in="SourceGraphic" />
             </feMerge>
           </filter>
         </defs>
-        <motion.path d="M 40 290 C 260 260, 280 60, 520 90 S 900 250, 1160 60" fill="none" stroke="url(#jt-grad)" strokeWidth="10" strokeLinecap="round" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.6, ease: 'easeInOut' }} style={{ filter: 'url(#softGlow)' }} />
-        <motion.path d="M 40 290 C 260 260, 280 60, 520 90 S 900 250, 1160 60" fill="none" stroke="rgba(255,255,255,0.8)" strokeWidth="2" strokeDasharray="6 14" strokeLinecap="round" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.6, ease: 'easeInOut', delay: 0.15 }} />
-        {PIN_POINTS.map((p, i) => (
+
+        {/* main curve */}
+        <motion.path
+          d="M 60 180 C 220 140, 360 80, 520 120 S 900 200, 1140 120"
+          fill="none"
+          stroke="url(#jt-grad)"
+          strokeWidth="10"
+          strokeLinecap="round"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 1.4, ease: 'easeInOut' }}
+          style={{ filter: 'url(#jt-glow)' }}
+        />
+
+        {/* light dashed overlay */}
+        <motion.path
+          d="M 60 180 C 220 140, 360 80, 520 120 S 900 200, 1140 120"
+          fill="none"
+          stroke="rgba(255,255,255,0.7)"
+          strokeWidth="2"
+          strokeDasharray="8 14"
+          strokeLinecap="round"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 1.4, ease: 'easeInOut', delay: 0.1 }}
+        />
+
+        {/* pins */}
+        {[
+          { x: 60, y: 180, label: 'Start' },
+          { x: 320, y: 110, label: 'Study Planner' },
+          { x: 600, y: 95, label: 'Personalised Learning' },
+          { x: 880, y: 190, label: 'Mock Exam' },
+          { x: 1140, y: 120, label: 'Exam Success' },
+        ].map((p, i) => (
           <g key={i} transform={`translate(${p.x}, ${p.y})`}>
-            <circle r="12" className="fill-white dark:fill-gray-900" />
+            <circle r="11" className="fill-[#0b0f14]" />
             <circle r="8" fill="url(#jt-grad)" />
           </g>
         ))}
       </svg>
-      <div className="mx-auto grid max-w-5xl grid-cols-5 gap-3 px-4 text-center text-xs sm:text-sm">
-        {milestones.map((m) => (
-          <div key={m.id} className="rounded-xl border px-2 py-2 dark:border-gray-800">
-            <div className="font-medium">{m.label}</div>
-            {m.sub && <div className="mt-0.5 opacity-70">{m.sub}</div>}
-          </div>
+
+      {/* labels */}
+      <div className="mx-auto grid max-w-5xl grid-cols-5 gap-3 px-2 text-center text-[11px] text-gray-300 sm:text-xs">
+        {['Start', 'Study Planner', 'Personalised Learning', 'Mock Exam', 'Exam Success'].map((t) => (
+          <div key={t} className="rounded-xl border border-white/10 px-2 py-1.5">{t}</div>
         ))}
       </div>
     </div>
-  )
+  );
 }
-
-const DEFAULT_MILESTONES: Milestone[] = [
-  { id: 'start', label: 'Start' },
-  { id: 'planner', label: 'Study Planner' },
-  { id: 'learn', label: 'Personalised Learning' },
-  { id: 'mock', label: 'Mock Exam' },
-  { id: 'pass', label: 'Exam Success' },
-]
-const PIN_POINTS = [
-  { x: 40, y: 290 },
-  { x: 300, y: 230 },
-  { x: 560, y: 110 },
-  { x: 820, y: 210 },
-  { x: 1160, y: 60 },
-]
