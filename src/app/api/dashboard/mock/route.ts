@@ -2,7 +2,14 @@
 import { NextResponse } from "next/server";
 
 const MOCK = {
-  user: { name: "Alex", exam: "BT", daysUntil: 42, passProb: 0.68, xp: 2450 },
+  user: {
+    name: "Alex",
+    exam: "BT",
+    daysUntil: 42,
+    passProb: 0.68,
+    xp: 2450,
+    xpHistory: [1200, 1320, 1400, 1500, 1600, 1720, 1810, 1900, 2010, 2130, 2200, 2310, 2380, 2450], // last→current
+  },
   today: {
     estimatedMinutes: 110,
     tasks: [

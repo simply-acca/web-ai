@@ -1,6 +1,7 @@
 // src/components/marketing/Hero.tsx
 import BackgroundGlow from '@/components/marketing/BackgroundGlow';
 import JourneyTrack from '@/components/marketing/JourneyTrack';
+import { Link } from 'lucide-react';
 
 export default function Hero() {
   return (
@@ -27,18 +28,18 @@ export default function Hero() {
         </p>
 
         <div className="mt-6 flex flex-wrap gap-3">
-          <a
+          <Link
             href="/pricing"
             className="rounded-xl bg-emerald-500 px-5 py-3 font-semibold text-gray-900 shadow-[0_0_30px_rgba(16,185,129,.25)] hover:bg-emerald-400"
           >
             Start your plan
-          </a>
-          <a
+          </Link>
+          <Link
             href="/papers"
             className="rounded-xl border px-5 py-3 text-gray-900 hover:border-emerald-400/40 dark:border-white/15 dark:text-white"
           >
             Explore papers
-          </a>
+          </Link>
         </div>
 
         <div className="mt-10 select-none">

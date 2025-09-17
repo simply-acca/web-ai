@@ -8,13 +8,16 @@ import XPCard from "@/components/dashboard/widgets/XPCard";
 export default function DashboardPage() {
   return (
     <DashboardLayout>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 space-y-6">
+      {/* switch to a 12-col grid for better control */}
+      <div className="grid grid-cols-12 gap-6">
+        {/* left stack */}
+        <div className="col-span-12 lg:col-span-8 xl:col-span-8 space-y-6">
           <TodayPlanCard />
           <ProgressCard />
         </div>
 
-        <div className="space-y-6">
+        {/* right stack (wider at xl than your previous 1/3) */}
+        <div className="col-span-12 lg:col-span-4 xl:col-span-4 space-y-6">
           <RevisionQueueCard />
           <InsightsCard />
           <XPCard />

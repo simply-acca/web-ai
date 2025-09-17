@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import ModuleDrilldownModal from "./ModuleDrilldownModal";
 import { LoadingSkeleton, ErrorState } from "@/components/ui/Status";
+import { Link } from "lucide-react";
 
 /* ---------- tooltips for filters ---------- */
 const FILTER_INFO: Record<"All" | "Core" | "Applied", string> = {
@@ -206,12 +207,12 @@ export default function ProgressCard() {
             {/* footer hint */}
             <div className="mt-5 flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400">
               <div>Milestones: 50% (foundation), 70% (exam-ready), 85% (confident pass)</div>
-              <a
+              <Link
                 href="/dashboard/insights"
                 className="rounded-md border px-2 py-1 text-[11px] border-zinc-200 hover:border-emerald-400/40 dark:border-white/10"
               >
                 See full analytics →
-              </a>
+              </Link>
             </div>
           </>
         )}
