@@ -1,24 +1,32 @@
-'use client';
-import { useTheme } from './useTheme';
+"use client";
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 
-export default function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
+export function ThemeToggle() {
+  const { theme, setTheme, resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
+  if (!mounted) {
+    // Avoid rendering incorrect icon before hydration
+    return (
+      <button
+        aria-label="Toggle theme"
+        className="rounded-xl border px-3 py-1 text-sm"
+      >
+        …
+      </button>
+    );
+  }
+
+  const isDark = resolvedTheme === "dark";
   return (
-    <div className="relative inline-flex items-center gap-1 rounded-xl border border-white/15 p-1 text-xs">
-      {(['light','system','dark'] as const).map((t) => (
-        <button
-          key={t}
-          onClick={() => setTheme(t)}
-          className={[
-            'rounded-lg px-2 py-1 capitalize transition',
-            theme === t ? 'bg-emerald-500 text-gray-900' : 'text-gray-300 hover:text-white'
-          ].join(' ')}
-          aria-pressed={theme === t}
-        >
-          {t}
-        </button>
-      ))}
-    </div>
+    <button
+      onClick={() => setTheme(isDark ? "light" : "dark")}
+      aria-label="Toggle theme"
+      className="rounded-xl border px-3 py-1 text-sm hover:bg-black/5 dark:hover:bg-white/5"
+    >
+      {isDark ? "🌙 Dark" : "☀️ Light"}
+    </button>
   );
 }
