@@ -63,10 +63,11 @@ export default function XPCard() {
                  dark:border-white/10 dark:bg-zinc-900/60"
       aria-labelledby="xp-heading"
     >
-      <div className="flex items-start justify-between gap-4">
-        {/* Left: Gauge + totals */}
-        <div className="flex items-center gap-3">
-          <div className="relative h-16 w-16">
+      {/* allow row to shrink correctly */}
+      <div className="flex items-start justify-between gap-4 min-w-0">
+        {/* Left: Gauge + totals (also shrinkable) */}
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="relative h-16 w-16 overflow-hidden rounded-full">
             <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="block">
               <defs>
                 <linearGradient id="xpGrad" x1="0" y1="0" x2="1" y2="1">
@@ -74,7 +75,15 @@ export default function XPCard() {
                   <stop offset="100%" stopColor="#10b981" />
                 </linearGradient>
               </defs>
-              <circle cx={size / 2} cy={size / 2} r={r} stroke="currentColor" className="text-zinc-200 dark:text-zinc-800" strokeWidth={stroke} fill="none" />
+              <circle
+                cx={size / 2}
+                cy={size / 2}
+                r={r}
+                stroke="currentColor"
+                className="text-zinc-200 dark:text-zinc-800"
+                strokeWidth={stroke}
+                fill="none"
+              />
               <motion.circle
                 cx={size / 2}
                 cy={size / 2}
@@ -105,22 +114,28 @@ export default function XPCard() {
             {/* hover glow */}
             <div
               className="pointer-events-none absolute inset-0 rounded-full opacity-0 blur-md transition group-hover:opacity-100"
-              style={{ background: "radial-gradient(30% 30% at 50% 50%, rgba(16,185,129,0.15), transparent 70%)" }}
+              style={{
+                background:
+                  "radial-gradient(30% 30% at 50% 50%, rgba(16,185,129,0.15), transparent 70%)",
+              }}
             />
           </div>
 
-          <div>
+          <div className="min-w-0">
             <div className="flex items-center gap-2">
               <h3 id="xp-heading" className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
                 Total XP
               </h3>
               <Tooltip label="How XP works">
-                <div className="cursor-help text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200" aria-hidden>
+                <div
+                  className="cursor-help text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200"
+                  aria-hidden
+                >
                   ⓘ
                 </div>
                 <div className="max-w-xs text-xs leading-5 text-zinc-700 dark:text-zinc-300">
-                  You gain XP for focused study time and completed tasks (notes, MCQs, scenarios, past questions). Every
-                  1000 XP is +1 level. Small daily streaks beat cramming.
+                  You gain XP for focused study time and completed tasks (notes, MCQs, scenarios, past
+                  questions). Every 1000 XP is +1 level. Small daily streaks beat cramming.
                 </div>
               </Tooltip>
             </div>
@@ -152,15 +167,18 @@ export default function XPCard() {
           </div>
         </div>
 
-        {/* Right: Sparkline + delta + refresh */}
-        <div className="flex flex-col items-end gap-2">
-          {/* Sparkline */}
-          <div className="rounded-md border border-zinc-200 bg-white/70 p-2 dark:border-white/10 dark:bg-zinc-900/40">
+        {/* Right: Sparkline + delta + refresh (fixed-size cluster) */}
+        <div className="flex shrink-0 flex-col items-end gap-2">
+          {/* Sparkline wrapper defines the box; inner fills & is clipped */}
+          <div
+            className="w-[128px] max-w-full rounded-md border border-zinc-200 bg-white/70 p-2 overflow-hidden
+                       dark:border-white/10 dark:bg-zinc-900/40"
+          >
             {loading ? (
-              <div className="h-[36px] w-[120px] rounded bg-zinc-200/70 dark:bg-zinc-800 animate-pulse" />
+              <div className="h-[36px] w-full rounded bg-zinc-200/70 dark:bg-zinc-800 animate-pulse" />
             ) : err ? (
-              <div className="h-[36px] w-[120px] text-[10px] flex items-center justify-center text-zinc-500 dark:text-zinc-400">
-                — 
+              <div className="h-[36px] w-full text-[10px] flex items-center justify-center text-zinc-500 dark:text-zinc-400">
+                —
               </div>
             ) : (
               <Sparkline values={history} width={120} height={36} />
@@ -203,71 +221,97 @@ export default function XPCard() {
   );
 }
 
-/* ---------- small helpers ---------- */
+/* ---------- helpers ---------- */
 
-// If mock provides no xpHistory, create a gentle synthetic last-14-days curve ending at current XP
 function normalizeHistory(apiHistory: number[] | undefined, currentXp: number) {
   if (apiHistory && apiHistory.length >= 2) {
-    // Keep last 14 points max
     return apiHistory.slice(-14);
   }
-  // synthesize: monotonic with tiny daily gains (looks stable, not noisy)
   const days = 14;
-  const base = Math.max(0, currentXp - 14 * 120); // assume ~120 xp/day recent
+  const base = Math.max(0, currentXp - 14 * 120);
   const arr = Array.from({ length: days }, (_, i) => {
     const step = i + 1;
-    return Math.round(base + step * (80 + (i % 3) * 15)); // small variance
+    return Math.round(base + step * (80 + (i % 3) * 15));
   });
-  // Ensure last matches current
   arr[arr.length - 1] = currentXp;
   return arr;
 }
 
-/* Narrow, neutral sparkline (no seaborn, just vanilla SVG) */
-function Sparkline({ values, width = 120, height = 36 }: { values: number[]; width?: number; height?: number }) {
+/* Sparkline fills wrapper; padded + clipped to never bleed */
+function Sparkline({
+  values,
+  width = 120,
+  height = 36,
+}: {
+  values: number[];
+  width?: number;
+  height?: number;
+}) {
   if (!values?.length) return null;
+
+  const PAD = 1;
+  const W = width - PAD * 2;
+  const H = height - PAD * 2;
+
   const min = Math.min(...values);
   const max = Math.max(...values);
   const range = Math.max(1, max - min);
-  const step = width / Math.max(1, values.length - 1);
+  const step = W / Math.max(1, values.length - 1);
 
   const pts = values.map((v, i) => {
-    const x = i * step;
-    const y = height - ((v - min) / range) * height;
+    const x = PAD + i * step;
+    const y = PAD + (H - ((v - min) / range) * H);
     return `${x},${y}`;
   });
 
   return (
-    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} aria-hidden>
+    <svg
+      viewBox={`0 0 ${width} ${height}`}
+      className="block w-full h-[36px]"
+      preserveAspectRatio="none"
+      aria-hidden
+    >
       <defs>
         <linearGradient id="xpLine" x1="0" x2="1" y1="0" y2="0">
           <stop offset="0%" stopColor="#34d399" />
           <stop offset="100%" stopColor="#10b981" />
         </linearGradient>
         <linearGradient id="xpFill" x1="0" x2="0" y1="0" y2="1">
-          <stop offset="0%" stopColor="#34d399" stopOpacity="0.20" />
+          <stop offset="0%" stopColor="#34d399" stopOpacity="0.2" />
           <stop offset="100%" stopColor="#10b981" stopOpacity="0.02" />
         </linearGradient>
+        <clipPath id="xpClip">
+          <rect x="0" y="0" width={width} height={height} rx="6" ry="6" />
+        </clipPath>
       </defs>
-      <polyline
-        points={`0,${height} ${pts.join(" ")} ${width},${height}`}
-        fill="url(#xpFill)"
-        stroke="none"
-      />
-      <polyline
-        points={pts.join(" ")}
-        fill="none"
-        stroke="url(#xpLine)"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+
+      <g clipPath="url(#xpClip)">
+        <polyline
+          points={`${PAD},${height - PAD} ${pts.join(" ")} ${width - PAD},${height - PAD}`}
+          fill="url(#xpFill)"
+          stroke="none"
+        />
+        <polyline
+          points={pts.join(" ")}
+          fill="none"
+          stroke="url(#xpLine)"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </g>
     </svg>
   );
 }
 
-/* Minimal tooltip (no lib): pass two children—trigger then content */
-function Tooltip({ label, children }: { label: string; children: [React.ReactNode, React.ReactNode] }) {
+/* Minimal tooltip */
+function Tooltip({
+  label,
+  children,
+}: {
+  label: string;
+  children: [React.ReactNode, React.ReactNode];
+}) {
   const [trigger, content] = children;
   return (
     <span className="relative inline-flex items-center">

@@ -2,7 +2,6 @@ import './globals.css';
 import type { Metadata } from 'next';
 import Providers from './provider';
 import { Toaster } from "react-hot-toast";
-import { ThemeToggle } from '@/components/theme/ThemeToggle';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 

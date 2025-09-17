@@ -102,36 +102,29 @@ export default function InsightsCard() {
             </div>
           </motion.div>
 
-          {/* Readiness (Avg Mastery) */}
+          {/* Readiness (minimal) */}
           <motion.div
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.25, delay: 0.05 }}
-            className="group rounded-xl border border-emerald-200/60 bg-emerald-50 p-3
-                       hover:shadow-sm dark:border-emerald-900/30 dark:bg-emerald-900/10"
-            title="Average mastery across your modules (higher = more exam-ready)."
+            className="group rounded-xl p-4
+                      bg-gradient-to-br from-emerald-500/5 to-teal-500/5
+                      ring-1 ring-emerald-400/20 hover:ring-emerald-400/30
+                      dark:from-emerald-400/5 dark:to-teal-400/5"
           >
-            <div className="flex items-center justify-between">
-              <div className="text-xs text-emerald-800/80 dark:text-emerald-300/80">
-                Readiness (Avg mastery)
-              </div>
-              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-white/70 text-emerald-700 ring-1 ring-emerald-300/60 dark:bg-transparent">
-                ✅
-              </span>
+            <div className="text-xs leading-none text-emerald-700/90 dark:text-emerald-300/80">
+              Readiness
             </div>
 
             <div className="mt-1 flex items-baseline gap-2">
-              <div className="text-xl font-semibold text-emerald-900 dark:text-emerald-200">
+              <span className="text-3xl font-bold tracking-tight text-emerald-800 dark:text-emerald-200">
                 {avgPct}%
-              </div>
-              <span className="text-[11px] text-emerald-900/70 dark:text-emerald-300/70">
-                70% = exam-ready
               </span>
             </div>
 
-            <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-emerald-200/40 dark:bg-emerald-900/40">
+            <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-emerald-900/10 dark:bg-emerald-900/30">
               <div
-                className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-emerald-500 transition-[width] duration-700"
+                className="h-full rounded-full bg-emerald-500 transition-[width] duration-700"
                 style={{ width: `${avgPct}%` }}
                 role="progressbar"
                 aria-valuenow={avgPct}
@@ -139,6 +132,9 @@ export default function InsightsCard() {
                 aria-valuemax={100}
               />
             </div>
+            <span className="text-[11px] text-emerald-900/60 dark:text-emerald-300/60">
+                avg&nbsp;mastery
+              </span>
           </motion.div>
         </div>
       )}
