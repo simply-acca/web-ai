@@ -21,7 +21,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </aside>
 
             <div className="flex-1 min-w-0">
-              <Topbar onMenuToggle={() => setOpen((v) => !v)} />
 
               {/* Mobile drawer */}
               <div className={`fixed inset-0 z-50 md:hidden ${open ? "" : "pointer-events-none"}`}>

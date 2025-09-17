@@ -4,20 +4,22 @@ import ProgressCard from "@/components/dashboard/widgets/ProgressCard";
 import RevisionQueueCard from "@/components/dashboard/widgets/RevisionQueueCard";
 import InsightsCard from "@/components/dashboard/widgets/InsightsCard";
 import XPCard from "@/components/dashboard/widgets/XPCard";
+import WelcomeHero from "@/components/dashboard/WelcomeHero";
 
 export default function DashboardPage() {
   return (
     <DashboardLayout>
-      {/* switch to a 12-col grid for better control */}
-      <div className="grid grid-cols-12 gap-6">
-        {/* left stack */}
-        <div className="col-span-12 lg:col-span-8 xl:col-span-8 space-y-6">
-          <TodayPlanCard />
+      <WelcomeHero todayMinutes={110} /> {/* or omit prop if unknown */}
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 space-y-6">
+          <section id="today">
+            <TodayPlanCard />
+          </section>
           <ProgressCard />
         </div>
 
-        {/* right stack (wider at xl than your previous 1/3) */}
-        <div className="col-span-12 lg:col-span-4 xl:col-span-4 space-y-6">
+        <div className="space-y-6">
           <RevisionQueueCard />
           <InsightsCard />
           <XPCard />

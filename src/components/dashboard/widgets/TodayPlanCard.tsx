@@ -2,9 +2,9 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { LoadingSkeleton, ErrorState } from "@/components/ui/Status";
+import WidgetFrame from "@/components/dashboard/WidgetFrame";
 import TaskDetailModal from "./TaskDetailModal";
 import toast from "react-hot-toast";
-
 
 type Task = {
   id: string;
@@ -19,7 +19,6 @@ type ApiToday = {
   estimatedMinutes: number;
   tasks: Task[];
 };
-
 
 export default function TodayPlanCard() {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -47,7 +46,6 @@ export default function TodayPlanCard() {
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const json = await res.json();
       const today: ApiToday = json.today ?? { estimatedMinutes: 0, tasks: [] };
-      // make sure we get consistent shape
       const withFlags = (today.tasks || []).map((t: Task) => ({ ...t, completed: !!t.completed }));
       setTasks(withFlags);
       setMeta({ estimatedMinutes: today.estimatedMinutes });
@@ -67,39 +65,38 @@ export default function TodayPlanCard() {
   }, []);
 
   // ---- Add-to-Plan integration (listen for custom event) -------
-useEffect(() => {
-  function handleAddTask(e: Event) {
-    const { detail } = e as CustomEvent<Task>;
-    if (!detail) return;
+  useEffect(() => {
+    function handleAddTask(e: Event) {
+      const { detail } = e as CustomEvent<Task>;
+      if (!detail) return;
 
-    // ensure unique id (avoid duplicates if same id is re-used)
-    const id =
-      !detail.id || tasks.some(t => t.id === detail.id)
-        ? `plan-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`
-        : detail.id;
+      // ensure unique id (avoid duplicates if same id is re-used)
+      const id =
+        !detail.id || tasks.some((t) => t.id === detail.id)
+          ? `plan-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`
+          : detail.id;
 
-    const toAdd: Task = {
-      ...detail,
-      id,
-      completed: false,
-      duration: Math.max(1, Number(detail.duration) || 15), // sane default
-    };
+      const toAdd: Task = {
+        ...detail,
+        id,
+        completed: false,
+        duration: Math.max(1, Number(detail.duration) || 15),
+      };
 
-    setTasks(prev => [toAdd, ...prev]);
+      setTasks((prev) => [toAdd, ...prev]);
 
-    // bump remaining/estimated minutes
-    setMeta(m => ({
-      estimatedMinutes: (m?.estimatedMinutes ?? 0) + (toAdd.duration || 0),
-    }));
+      // bump remaining/estimated minutes
+      setMeta((m) => ({
+        estimatedMinutes: (m?.estimatedMinutes ?? 0) + (toAdd.duration || 0),
+      }));
 
-    // optional toast
-    toast?.success?.(`Added “${toAdd.title}” to today’s plan`);
-  }
+      toast?.success?.(`Added “${toAdd.title}” to today’s plan`);
+    }
 
-  window.addEventListener("acai:add-task", handleAddTask as EventListener);
-  return () => window.removeEventListener("acai:add-task", handleAddTask as EventListener);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-}, [tasks]); // include tasks so we can check for duplicate ids
+    window.addEventListener("acai:add-task", handleAddTask as EventListener);
+    return () => window.removeEventListener("acai:add-task", handleAddTask as EventListener);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tasks]);
 
   // ---- Timer ---------------------------------------------------
   useEffect(() => {
@@ -128,7 +125,6 @@ useEffect(() => {
 
   const startTask = (t: Task) => {
     if (t.completed) {
-      // uncomplete and start
       setTasks((arr) => arr.map((x) => (x.id === t.id ? { ...x, completed: false } : x)));
     }
     setActive({
@@ -152,9 +148,7 @@ useEffect(() => {
 
   // ---- Complete / reorder -------------------------------------
   const toggleComplete = (id: string) => {
-    setTasks((arr) =>
-      arr.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t))
-    );
+    setTasks((arr) => arr.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t)));
     if (active?.task.id === id) stopSession();
   };
 
@@ -189,20 +183,29 @@ useEffect(() => {
   // ---- UI helpers ---------------------------------------------
   const iconFor = (tag?: Task["tag"]) => {
     switch (tag) {
-      case "note": return "📝";
-      case "mcq": return "❓";
-      case "scenario": return "📄";
-      case "past": return "🗂️";
-      default: return "▣";
+      case "note":
+        return "📝";
+      case "mcq":
+        return "❓";
+      case "scenario":
+        return "📄";
+      case "past":
+        return "🗂️";
+      default:
+        return "▣";
     }
   };
   const pillClassFor = (tag?: Task["tag"]) =>
     [
       "inline-flex items-center rounded-full px-2 py-0.5 text-[11px] ring-1",
-      tag === "note" && "bg-amber-50 text-amber-700 ring-amber-200/60 dark:bg-amber-900/10 dark:text-amber-300 dark:ring-amber-800/30",
-      tag === "mcq" && "bg-blue-50 text-blue-700 ring-blue-200/60 dark:bg-blue-900/10 dark:text-blue-300 dark:ring-blue-800/30",
-      tag === "scenario" && "bg-purple-50 text-purple-700 ring-purple-200/60 dark:bg-purple-900/10 dark:text-purple-300 dark:ring-purple-800/30",
-      tag === "past" && "bg-emerald-50 text-emerald-700 ring-emerald-200/60 dark:bg-emerald-900/10 dark:text-emerald-300 dark:ring-emerald-800/30",
+      tag === "note" &&
+        "bg-amber-50 text-amber-700 ring-amber-200/60 dark:bg-amber-900/10 dark:text-amber-300 dark:ring-amber-800/30",
+      tag === "mcq" &&
+        "bg-blue-50 text-blue-700 ring-blue-200/60 dark:bg-blue-900/10 dark:text-blue-300 dark:ring-blue-800/30",
+      tag === "scenario" &&
+        "bg-purple-50 text-purple-700 ring-purple-200/60 dark:bg-purple-900/10 dark:text-purple-300 dark:ring-purple-800/30",
+      tag === "past" &&
+        "bg-emerald-50 text-emerald-700 ring-emerald-200/60 dark:bg-emerald-900/10 dark:text-emerald-300 dark:ring-emerald-800/30",
       !tag && "bg-zinc-100 text-zinc-700 ring-zinc-200 dark:bg-zinc-800 dark:text-zinc-200 dark:ring-white/10",
     ]
       .filter(Boolean)
@@ -210,7 +213,7 @@ useEffect(() => {
 
   // Remaining mins ignores completed
   const remainingMins = useMemo(
-    () => tasks.reduce((a, t) => a + (t.completed ? 0 : (t.duration || 0)), 0),
+    () => tasks.reduce((a, t) => a + (t.completed ? 0 : t.duration || 0), 0),
     [tasks]
   );
 
@@ -221,56 +224,62 @@ useEffect(() => {
     return Math.round(((total - active.remainingSec) / total) * 100);
   }, [active]);
 
-  // ---- Render --------------------------------------------------
+  const subtitle = new Date().toLocaleDateString(undefined, {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+  });
+
   return (
     <>
-      <section
-        className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm
-                   dark:border-white/10 dark:bg-zinc-900/60"
-        aria-labelledby="today-heading"
+      <WidgetFrame
+        title="Today’s Plan"
+        subtitle={subtitle}
+        status={
+          <span
+            title="Remaining time"
+            className="rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-300"
+          >
+            {remainingMins} mins
+          </span>
+        }
+        actions={
+          !loading && (
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setTasks((arr) => [...arr].sort(() => Math.random() - 0.5))}
+                className="rounded-md border px-2 py-1 text-xs hover:border-emerald-400/40 dark:border-white/10"
+                aria-label="Shuffle today’s tasks"
+                title="Shuffle"
+              >
+                Shuffle
+              </button>
+              <button
+                onClick={load}
+                className="rounded-md border px-2 py-1 text-xs hover:border-emerald-400/40 dark:border-white/10"
+                title="Refresh"
+              >
+                Refresh
+              </button>
+            </div>
+          )
+        }
+        isExpandable
       >
-        {/* Header */}
-        <div className="flex items-center justify-between gap-3">
-          <div>
-            <h3 id="today-heading" className="text-lg font-semibold">Today’s Plan</h3>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400">
-              {new Date().toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" })}
-            </p>
-          </div>
-          <div className="flex items-center gap-2">
-            <span
-              title="Remaining time"
-              className="rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-300"
-            >
-              {remainingMins} mins
-            </span>
-            <button
-              onClick={() => setTasks((arr) => [...arr].sort(() => Math.random() - 0.5))}
-              className="rounded-md border px-2 py-1 text-xs hover:border-emerald-400/40 dark:border-white/10"
-              aria-label="Shuffle today’s tasks"
-              title="Shuffle"
-            >
-              Shuffle
-            </button>
-          </div>
-        </div>
-
         {/* States */}
         {loading ? (
-          <div className="mt-4">
+          <div className="mt-2">
             <LoadingSkeleton rows={4} />
           </div>
         ) : err ? (
-          <div className="mt-4">
+          <div className="mt-2">
             <ErrorState onRetry={load} details="We couldn’t fetch your plan just now.">
               Failed to load Today’s Plan.
             </ErrorState>
           </div>
         ) : tasks.length === 0 ? (
-          <div className="mt-5 rounded-xl border border-dashed border-zinc-300 p-6 text-center dark:border-zinc-700">
-            <div className="text-sm text-zinc-600 dark:text-zinc-400">
-              No tasks scheduled for today.
-            </div>
+          <div className="mt-3 rounded-xl border border-dashed border-zinc-300 p-6 text-center dark:border-zinc-700">
+            <div className="text-sm text-zinc-600 dark:text-zinc-400">No tasks scheduled for today.</div>
             <button
               onClick={load}
               className="mt-3 rounded-md bg-emerald-500 px-3 py-1.5 text-sm font-semibold text-gray-900 hover:bg-emerald-400"
@@ -281,7 +290,7 @@ useEffect(() => {
         ) : (
           <>
             {/* Tasks */}
-            <ul className="mt-4 space-y-2">
+            <ul className="mt-3 space-y-2">
               {tasks.map((t, idx) => (
                 <li
                   key={t.id}
@@ -293,7 +302,7 @@ useEffect(() => {
                   ].join(" ")}
                   draggable
                   onDragStart={() => onDragStart(idx)}
-                  onDragOver={onDragOver}
+                  onDragOver={(e) => e.preventDefault()}
                   onDrop={() => onDrop(idx)}
                 >
                   {/* Drag handle + keyboard move */}
@@ -357,9 +366,7 @@ useEffect(() => {
                       </div>
                     </div>
                     {t.detail && !t.completed && (
-                      <p className="mt-1 line-clamp-1 text-xs text-zinc-500 dark:text-zinc-400">
-                        {t.detail}
-                      </p>
+                      <p className="mt-1 line-clamp-1 text-xs text-zinc-500 dark:text-zinc-400">{t.detail}</p>
                     )}
                   </div>
 
@@ -420,7 +427,7 @@ useEffect(() => {
             )}
           </>
         )}
-      </section>
+      </WidgetFrame>
 
       {/* Task modal */}
       <TaskDetailModal task={openTask} onClose={() => setOpenTask(null)} />
