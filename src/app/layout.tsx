@@ -24,7 +24,7 @@ export default function RootLayout({
       <body className="antialiased min-h-screen bg-zinc-50 text-zinc-900 dark:bg-[#0b0f14] dark:text-zinc-100 transition-colors duration-700">
         <Toaster position="bottom-right" />
         <Providers>
-          <Header />
+          <Header/>
           <main>{children}</main>
           <Footer />
         </Providers>
