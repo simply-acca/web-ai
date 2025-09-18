@@ -11,10 +11,8 @@ export default function Page() {
     <main className="space-y-24">
       <Hero />                 {/* renders with its own background */}
       <HeroJourneySection />
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <WhyUs />
         <CTA />
-      </section>
       <FeatureTiles />         {/* renders with its own background */}
       <SupportedPapers />
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

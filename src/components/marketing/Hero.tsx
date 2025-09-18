@@ -11,7 +11,7 @@ import HeroPreview from './HeroPreview';
 export default function Hero() {
   return (
     <section
-      className="relative isolate overflow-hidden rounded-3xl
+      className="mt-5 relative isolate overflow-hidden rounded-3xl
                  border border-black/10 dark:border-white/10
                  bg-[linear-gradient(180deg,rgba(255,255,255,0.92),rgba(248,250,252,0.92))]
                  dark:bg-[linear-gradient(180deg,rgba(17,22,28,0.92),rgba(9,12,17,0.92))]
@@ -55,7 +55,7 @@ export default function Hero() {
           className="mt-4 max-w-2xl text-lg text-zinc-700 dark:text-zinc-300"
         >
           Pass ACCA faster with AI-powered study plans, adaptive notes, and exam-style practice.
-          Join 1,000+ students compounding daily wins—without the burnout.
+          Join 10,000+ students compounding daily wins—without the burnout.
         </motion.p>
 
         {/* CTAs */}

@@ -1,176 +1,139 @@
+// src/components/marketing/WhyChoose.tsx
 "use client";
 
 import { motion } from "framer-motion";
+import Link from "next/link";
 
-export default function WhyUs() {
-  const fadeInUp = {
-    hidden: { opacity: 0, y: 30 },
-    visible: (i: number) => ({
-      opacity: 1,
-      y: 0,
-      transition: {
-        delay: i * 0.15,
-        duration: 0.5,
-        ease: "easeOut",
-      },
-    }),
-  };
+type Point = {
+  title: string;
+  traditional: string; // “Traditional providers …”
+  us: string;          // “ACCA AI …”
+};
 
-  const titleAnim = {
-    hidden: { opacity: 0, scale: 0.97, y: 18 },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      y: 0,
-      transition: { duration: 0.55, ease: "easeOut" },
-    },
-  };
+const POINTS: Point[] = [
+  {
+    title: "Planner that fits YOU — not just the syllabus",
+    traditional: "Traditional providers: fixed schedules you must bend around.",
+    us: "ACCA AI: adaptive plan tuned to your lifestyle, deadlines, and pace.",
+  },
+  {
+    title: "Personalised learning — not one-size-fits-all",
+    traditional: "Traditional providers: same content for everyone.",
+    us: "ACCA AI: path tailored by your progress and exam-style performance.",
+  },
+  {
+    title: "Strengths & weaknesses — clear, visual insights",
+    traditional: "Traditional providers: generic progress trackers (or none).",
+    us: "ACCA AI: instant dashboards with next best actions that cut guesswork.",
+  },
+  {
+    title: "24/7 smart help — not forum replies",
+    traditional: "Traditional providers: slow tutor responses or scattered forums.",
+    us: "ACCA AI: instant explanations and step-by-step guidance when you’re stuck.",
+  },
+  {
+    title: "Learn smarter, remember more",
+    traditional: "Traditional providers: long PDFs/lectures you forget next day.",
+    us: "ACCA AI: AI-driven notes, flashcards & revision tuned to your memory style.",
+  },
+  {
+    title: "Human factors = real results",
+    traditional: "Traditional providers: focus on content delivery only.",
+    us: "ACCA AI: mindset, motivation & confidence designed into every plan.",
+  },
+];
 
-  const subtitleAnim = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6, delay: 0.18, ease: "easeOut" },
-    },
-  };
-
-  // underline animation (scaleX)
-  const underlineVariants = {
-    hidden: { scaleX: 0, opacity: 0 },
-    visible: {
-      scaleX: 1,
-      opacity: 1,
-      transition: { duration: 0.65, delay: 0.12, ease: "easeOut" },
-    },
-  };
-
-  const cards = [
-    {
-      title: "Traditional Study",
-      points: [
-        "Generic study paths",
-        "Heavy reliance on lectures & notes",
-        "Little focus on exam-day confidence",
-      ],
-      type: "negative",
-    },
-    {
-      title: "ACCA AI",
-      points: [
-        "Personalized study plan tuned to your exam date & pace",
-        "Adaptive notes, flashcards & CBE-style mocks",
-        "AI tutor support for weak spots & confidence building",
-        "Designed around human factors: energy, pacing, motivation",
-      ],
-      type: "positive",
-    },
-    {
-      title: "Old Exam Prep",
-      points: [
-        "Practice-heavy but unstructured",
-        "No adaptive planning",
-        "Overlooks energy & motivation",
-      ],
-      type: "negative",
-    },
-  ];
-
+export default function WhyChoose() {
   return (
-    <section className="relative isolate mx-auto max-w-7xl px-6 sm:px-10 py-20">
-      <div className="rounded-3xl border border-gray-200 dark:border-white/10 bg-white/70 dark:bg-zinc-900/50 shadow-md backdrop-blur-sm p-10">
-        {/* Title */}
-        <div className="text-center mb-12">
-          <motion.h2
-            className="text-2xl md:text-3xl font-semibold tracking-tight text-gray-900 dark:text-white inline-block"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.6 }}
-            variants={titleAnim}
-          >
-            Why choose{" "}
-            <span className="relative inline-block">
-              <span className="bg-gradient-to-r from-emerald-600 to-sky-500 bg-clip-text text-transparent">
-                ACCA AI
-              </span>
-              {/* animated underline (positioned under the inline-block text) */}
-              <motion.span
-                aria-hidden="true"
-                className="absolute left-0 right-0 -bottom-2 h-1 rounded-full"
-                style={{ transformOrigin: "left center" }}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, amount: 0.6 }}
-                variants={underlineVariants}
-              >
-                {/* gradient + subtle glow */}
-                <span className="block h-full rounded-full bg-gradient-to-r from-emerald-400 to-teal-300 opacity-90" />
-                {/* soft blurred glow layer */}
-                <span className="pointer-events-none absolute inset-0 rounded-full blur-2xl opacity-30 bg-gradient-to-r from-emerald-400 to-teal-300" />
-              </motion.span>
-            </span>
-            ?
-          </motion.h2>
+    <section
+      aria-labelledby="why-choose"
+      className="mx-auto mt-16 max-w-7xl px-6 sm:px-10"
+    >
+      <header className="mb-8">
+        <h2
+          id="why-choose"
+          className="text-3xl font-semibold tracking-tight text-zinc-100/95 md:text-4xl"
+        >
+          Why choose ACCA AI?
+        </h2>
+        <p className="mt-2 max-w-3xl text-sm leading-relaxed text-zinc-400 md:text-base">
+          Built around clarity and momentum. Less second-guessing, more daily wins—so you
+          walk into the exam confident.
+        </p>
+      </header>
 
-          <motion.p
-            className="mt-3 max-w-2xl mx-auto text-sm md:text-base text-gray-600 dark:text-gray-400 leading-relaxed"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.6 }}
-            variants={subtitleAnim}
-          >
-            We don’t just provide materials. We build{" "}
-            <span className="font-medium">a complete learning journey</span> that
-            adapts to your pace, supports your mindset, and helps you pass in the
-            best possible condition.
-          </motion.p>
-        </div>
+      <div
+        className="relative overflow-hidden rounded-3xl border border-white/10 bg-zinc-900/50 p-5 shadow-[-8px_-8px_40px_rgba(16,185,129,0.06),8px_8px_40px_rgba(59,130,246,0.06)] sm:p-8"
+      >
+        {/* watermark / deco */}
+        <svg
+          aria-hidden
+          className="pointer-events-none absolute -right-10 top-1/2 hidden h-72 -translate-y-1/2 opacity-[0.06] sm:block"
+          viewBox="0 0 200 200"
+        >
+          <defs>
+            <linearGradient id="wg" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="#10b981" />
+              <stop offset="100%" stopColor="#38bdf8" />
+            </linearGradient>
+          </defs>
+          <path d="M20 150 L90 80 L180 170" stroke="url(#wg)" strokeWidth="18" strokeLinecap="round" fill="none" />
+          <circle cx="60" cy="70" r="30" fill="url(#wg)" />
+        </svg>
 
-        {/* Comparison */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {cards.map((card, i) => (
-            <motion.div
-              key={card.title}
-              className={`group rounded-2xl p-6 shadow-sm transition transform hover:-translate-y-1 ${
-                card.type === "positive"
-                  ? "border-2 border-emerald-500 bg-gradient-to-br from-emerald-50 via-white to-sky-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 hover:shadow-emerald-500/20 hover:border-emerald-600"
-                  : "border border-gray-200 dark:border-white/10 bg-white dark:bg-zinc-900/60 hover:shadow-lg"
-              }`}
-              custom={i}
-              initial="hidden"
-              whileInView="visible"
+        {/* grid (two columns on lg, one on mobile) */}
+        <ol className="grid gap-6 lg:grid-cols-2">
+          {POINTS.map((p, i) => (
+            <motion.li
+              key={p.title}
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
-              variants={fadeInUp}
+              transition={{ duration: 0.4, ease: "easeOut", delay: i * 0.04 }}
+              className="group rounded-2xl bg-zinc-900/40 p-5 ring-1 ring-white/8 transition hover:bg-zinc-900/55"
             >
-              <h3
-                className={`text-lg font-semibold mb-4 ${
-                  card.type === "positive"
-                    ? "text-emerald-700 dark:text-emerald-400"
-                    : "text-gray-900 dark:text-white"
-                }`}
-              >
-                {card.title}
-              </h3>
-              <ul className="space-y-3 text-sm">
-                {card.points.map((point, j) => (
-                  <li key={j} className="flex items-start gap-2">
-                    <span
-                      className={`mt-0.5 transition-transform duration-200 group-hover:scale-110 group-hover:-translate-y-0.5 ${
-                        card.type === "positive"
-                          ? "text-emerald-500"
-                          : "text-red-500"
-                      }`}
-                    >
-                      {card.type === "positive" ? "✔" : "✖"}
-                    </span>
-                    <span className="text-gray-700 dark:text-gray-300">
-                      {point}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
+              {/* number + title */}
+              <div className="mb-2 flex items-start gap-3">
+                <span className="select-none font-semibold tabular-nums text-zinc-500">
+                  {String(i + 1).padStart(2, "0")}.
+                </span>
+                <h3 className="text-base font-semibold text-zinc-100">
+                  {p.title}
+                </h3>
+              </div>
+
+              {/* compare lines */}
+              <div className="ml-8 space-y-1.5 text-sm">
+                <p className="text-zinc-400">
+                  <span className="mr-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-zinc-800 text-[11px] text-zinc-300 ring-1 ring-white/10">
+                    🧱
+                  </span>
+                  {p.traditional}
+                </p>
+                <p className="text-emerald-300">
+                  <span className="mr-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500/10 text-[11px] text-emerald-300 ring-1 ring-emerald-500/30">
+                    ⚡
+                  </span>
+                  {p.us}
+                </p>
+              </div>
+            </motion.li>
           ))}
+        </ol>
+
+        {/* CTA stripe */}
+        <div className="mt-8 flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-zinc-900/50 p-4 ring-1 ring-white/8">
+          <p className="text-sm text-zinc-300">
+            Other platforms give you content.{" "}
+            <span className="text-emerald-400">We give you results.</span> Start free and
+            get a plan that fits you.
+          </p>
+          <Link
+            href="/pricing"
+            className="inline-flex items-center justify-center rounded-xl bg-emerald-500 px-4 py-2 text-sm font-semibold text-gray-900 hover:bg-emerald-400"
+          >
+            Create your plan
+          </Link>
         </div>
       </div>
     </section>
