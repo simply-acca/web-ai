@@ -4,6 +4,8 @@ import Providers from './provider';
 import { Toaster } from "react-hot-toast";
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
+import { Inter } from 'next/font/google';
+const inter = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-inter' });
 
 export const metadata: Metadata = {
   title: { default: 'ACCA with AI — Faster, Smarter, Passed', template: '%s | ACCA with AI' },
@@ -18,7 +20,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className={inter.variable} suppressHydrationWarning>
       <body className="antialiased min-h-screen bg-zinc-50 text-zinc-900 dark:bg-[#0b0f14] dark:text-zinc-100 transition-colors duration-700">
         <Toaster position="bottom-right" />
         <Providers>

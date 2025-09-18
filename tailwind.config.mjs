@@ -3,6 +3,9 @@ export default {
   darkMode: 'class', // ⬅️ critical: class strategy for your .dark toggle
   theme: {
     extend: {
+      fontFamily: {
+      sans: ['var(--font-inter)', 'sans-serif'],
+    } ,
       colors: {
         brand: {
           50: '#ecfdf5',
